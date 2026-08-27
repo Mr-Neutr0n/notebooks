@@ -130,7 +130,7 @@ def test_konflux_arches_required() -> None:
         "(platform_machine == 'aarch64' and sys_platform == 'linux') or "
         "(platform_machine == 'x86_64' and sys_platform == 'linux')"
     ) == frozenset({"x86_64", "aarch64"})
-    assert helper.konflux_arches_required("platform_machine == \"s390x\"") == frozenset({"s390x"})
+    assert helper.konflux_arches_required('platform_machine == "s390x"') == frozenset({"s390x"})
 
 
 def test_collect_index_hashes_prefer_includes_sdist_when_el9_wheel_exists() -> None:
