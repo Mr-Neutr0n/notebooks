@@ -859,10 +859,6 @@ function check_image_commit_id_matches_metadata() {
     local image_commit_id="${2}"
     local is_pipeline_runtime="false"
 
-    local short_image_commit_id
-    # We're interested only in the first 7 characters of the commit ID
-    short_image_commit_id=${image_commit_id:0:7}
-
     local file_image_commit_id
     # Check if the image variable is a pipeline runtime image
     if [[ "${image_variable}" == *"odh-pipeline-runtime-"* ]]; then
@@ -875,9 +871,16 @@ function check_image_commit_id_matches_metadata() {
         return 1
     }
 
-    test "${short_image_commit_id}" = "${file_image_commit_id}" || test "${is_pipeline_runtime}" = "true" || {
+    # commit.env entries may hold a 7-char prefix or a full 40-char SHA;
+    # compare by the shortest length of the two values.
+    local compare_len="${#file_image_commit_id}"
+    local commit_id_from_image="${image_commit_id}"
+    if [[ "${#image_commit_id}" -lt "${compare_len}" ]]; then
+        compare_len="${#image_commit_id}"
+    fi
+    test "${commit_id_from_image:0:compare_len}" = "${file_image_commit_id:0:compare_len}" || test "${is_pipeline_runtime}" = "true" || {
         echo "Image commit IDs for image variable '${image_variable}' don't equal!"
-        echo "Image commit ID gathered from image: '${short_image_commit_id}'"
+        echo "Image commit ID gathered from image: '${image_commit_id}'"
         echo "Image commit ID in '${COMMIT_ENV_PATH}'or '${COMMIT_LATEST_ENV_PATH}': '${file_image_commit_id}'"
         return 1
     }

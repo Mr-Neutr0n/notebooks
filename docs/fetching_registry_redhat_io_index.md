@@ -315,7 +315,7 @@ The full image object contains parsed labels under `parsed_data.labels`. These c
 
 ### Verifying commit.env values via the API
 
-The `vcs-ref` label provides the full 40-character git commit hash. The `commit.env` file uses the first 7 characters. This means you can verify commit.env values purely through the Pyxis API without needing `skopeo`:
+The `vcs-ref` label provides the full 40-character git commit hash. The `commit.env` file uses the full `vcs-ref` value, so you can verify commit.env values purely through the Pyxis API without needing `skopeo`:
 
 ```bash
 # Get the vcs-ref label for a specific image
@@ -325,7 +325,7 @@ import sys, json
 labels = json.load(sys.stdin)['data'][0]['parsed_data']['labels']
 vcs_ref = next(l['value'] for l in labels if l['name'] == 'vcs-ref')
 print(f'vcs-ref: {vcs_ref}')
-print(f'commit.env value (7-char): {vcs_ref[:7]}')
+print(f'commit.env value: {vcs_ref}')
 "
 ```
 

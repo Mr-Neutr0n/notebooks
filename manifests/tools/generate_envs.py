@@ -124,7 +124,7 @@ def main(
         var_base_name = repo_name.replace("rhel9", "ubi9")
 
         param_line = f"{var_base_name}-{suffix}=registry.redhat.io/{repo}@{manifest_list_digest}"
-        commit_line = f"{var_base_name}-commit-{suffix}={vcs_ref[:7]}"
+        commit_line = f"{var_base_name}-commit-{suffix}={vcs_ref}"
 
         params_env_lines.append(param_line)
         commit_env_lines.append(commit_line)

@@ -323,10 +323,12 @@ def test_params_env_image_metadata(
             if commit_id and "odh-pipeline-runtime-" not in variable:
                 file_commit = _find_commit_value(variable, commit_entries)
                 if file_commit:
-                    short_commit = commit_id[:7]
+                    # commit.env entries may hold a 7-char prefix or a full 40-char SHA;
+                    # compare by the shortest length of the two values.
+                    compare_len = min(len(commit_id), len(file_commit))
                     with subtests.test(msg=f"{variable}: commit ID"):
-                        assert short_commit == file_commit, (
-                            f"Image commit '{short_commit}' != commit.env '{file_commit}'"
+                        assert commit_id[:compare_len] == file_commit[:compare_len], (
+                            f"Image commit '{commit_id}' != commit.env '{file_commit}'"
                         )
 
             # --- YAML-dependent checks below ---
